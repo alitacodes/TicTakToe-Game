@@ -68,15 +68,13 @@ function minimax(board, depth, isMax, ai, human, alpha, beta) {
 }
 
 export function getBestMove(board, ai = 'O', human = 'X') {
-  // Opening heuristics for speed
-  const center = 4;
-  if (board[center] === null) return center;
-  const corners = [0, 2, 6, 8];
-  for (const c of corners) if (board[c] === null) return c; // quick heuristic if board is mostly empty
+  // Always compute with full minimax; order moves for better pruning only
+  const preferredOrder = [4, 0, 2, 6, 8, 1, 3, 5, 7];
+  const moves = preferredOrder.filter(i => board[i] === null);
 
   let bestVal = -Infinity;
   let bestMove = -1;
-  for (const move of getAvailableMoves(board)) {
+  for (const move of moves) {
     board[move] = ai;
     const moveVal = minimax(board, 0, false, ai, human, -Infinity, Infinity);
     board[move] = null;
